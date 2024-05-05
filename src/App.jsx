@@ -1,17 +1,13 @@
-import logo from "./logo.svg";
+import { Container, Grid, Autocomplete, TextField } from "@mui/material";
 import "./App.css";
 import { useEffect, useState } from "react";
+import JobCard from "./Components/JobCard";
+import SearchBar from "./Components/SearchBar";
 
 function App() {
   const [jobs, setJobs] = useState();
   useEffect(() => {
     const getJobs = async () => {
-      let headersList = {
-        Accept: "*/*",
-        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-        "Content-Type": "application/json",
-      };
-
       let bodyContent = JSON.stringify({
         limit: 10,
         offset: 0,
@@ -22,7 +18,9 @@ function App() {
         {
           method: "POST",
           body: bodyContent,
-          headers: headersList,
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -32,31 +30,28 @@ function App() {
 
     getJobs();
   }, []);
-  console.log(jobs?.map((item) => item));
+  console.log(jobs);
+  
   return (
-    <div className="wrapper">
-      <div className="jobcards">
+    <Container
+      maxWidth="lg"
+      sx={{
+        mt: 4,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <SearchBar/>
+      <Grid container spacing={2}>
         {jobs?.map((job) => (
-          <JobCard key={job.jdUid} data={job} />
+          <Grid item xs={12} sm={6} md={4} lg={4} key={job.jdUid}>
+            <JobCard data={job} />
+          </Grid>
         ))}
-      </div>
-    </div>
+      </Grid>
+    </Container>
   );
 }
-
-const JobCard = ({ data }) => {
-  return (
-    <div className="card">
-      <div className="card-head">
-        <img src={data?.logoUrl} alt="Company Logo" />
-        <div>
-          <div>{data?.companyName}</div>
-          <div>{data?.jobRole}</div>
-          <div>{data?.location}</div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default App;

@@ -1,21 +1,29 @@
-.wrapper{
-  margin: 20px;
+body{
+  font-family: "Nunito", sans-serif;
 }
-.jobcards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+.card-body:hover{
+  transition: all .2s ease-in-out;
+  transform: scale(1.01);
 }
-.card {
-  border: 2px solid black;
-  border-radius: 0.5rem;
-  padding: 15px;
+.fade-text {
+  position: relative;
+  max-height: 200px;
+  overflow: hidden;
 }
-.card .card-head{
-  display: flex;
-  gap: 10px;
+
+.fade-text::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px; 
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
 }
-.card img{
-  width: 40px;
-  height: 60px;
+
+.read-more {
+  display: block;
+  text-align: center;
+  color: blue;
+  cursor: pointer;
 }

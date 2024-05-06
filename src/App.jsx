@@ -1,11 +1,19 @@
-import { Container, Grid, Autocomplete, TextField } from "@mui/material";
+import { Container, Grid, Box, TextField } from "@mui/material";
 import "./App.css";
 import { useEffect, useState } from "react";
 import JobCard from "./Components/JobCard";
 import SearchBar from "./Components/SearchBar";
+import {
+  Experience,
+  MiniBasePay,
+  Remote,
+  Roles,
+  numberOfEmployees,
+} from "./Components/Options";
 
 function App() {
   const [jobs, setJobs] = useState();
+  const [filter, setFilter] = useState([]);
   useEffect(() => {
     const getJobs = async () => {
       let bodyContent = JSON.stringify({
@@ -30,19 +38,47 @@ function App() {
 
     getJobs();
   }, []);
-  console.log(jobs);
-  
+
+  const inputfields = [
+    { name: "Roles", options: Roles, multiple: true },
+    {
+      name: "Number of Employees",
+      options: numberOfEmployees,
+      multiple: true,
+    },
+    {
+      name: "Experience",
+      options: Experience,
+      multiple: false,
+    },
+    { name: "Remote", options: Remote, multiple: true },
+    {
+      name: "Minimum Base Pay Salary",
+      options: MiniBasePay,
+      multiple: false,
+    },
+  ];
   return (
-    <Container
-      maxWidth="lg"
-      sx={{
-        mt: 4,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <SearchBar/>
+    <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <div className="filter-conatiner">
+        {inputfields.map((field) => (
+          <Box key={field.name} sx={{ height: "55px", mx: 1 }}>
+            <SearchBar
+              multiple={field.multiple}
+              label={field.name}
+              options={field.options}
+              width={field.width}
+            />
+          </Box>
+        ))}
+        <TextField
+          placeholder="Search Company Name"
+          onChange={(event, value) => setFilter(prev=>[...prev, {companyName:value}])}
+          sx={{ placeSelf: "end", mt: 3 }}
+          id="outlined-size-small"
+          size="small"
+        />
+      </div>
       <Grid container spacing={2}>
         {jobs?.map((job) => (
           <Grid item xs={12} sm={6} md={4} lg={4} key={job.jdUid}>

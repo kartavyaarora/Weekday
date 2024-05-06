@@ -1,45 +1,41 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { useState } from "react";
 
-const SelectWithSearch = ({ options, onChange, label, sx }) => {
+const SelectWithSearch = ({ options, onChange, label, multiple }) => {
   return (
     <Autocomplete
+      multiple={multiple}
+      id="size-small-outlined-multi"
+      size="small"
+      sx={{ my: 3, paddingY: 0 }}
       options={options}
-      onChange={(event, value) => onChange(value)}
+      groupBy={(option) => option.heading}
+      getOptionLabel={(option) => option.label}
       renderInput={(params) => (
         <TextField
           {...params}
-          label={label}
-          variant="outlined"
-          InputProps={{
-            ...params.InputProps,
-            type: "search",
-          }}
+          placeholder={label}
         />
       )}
+      onChange={(event, value) => onChange(value)}
     />
   );
 };
 
-export default function SearchBar() {
-  const options = [
-    { label: "Option 1", value: 1 },
-    { label: "Option 2", value: 2 },
-    { label: "Option 3", value: 3 },
-  ];
+export default function SearchBar({ label, options, multiple, width }) {
   const [selectedOption, setSelectedOption] = useState(null);
-
+  console.log(selectedOption)
   const handleSelectChange = (option) => {
     setSelectedOption(option);
   };
+
   return (
-    <div>
       <SelectWithSearch
         options={options}
         onChange={handleSelectChange}
-        label={"Roles"}
+        label={label}
+        multiple={multiple}
+        width={width}
       />
-      {selectedOption && <p>Selected Option: {selectedOption.label}</p>}
-    </div>
   );
 }

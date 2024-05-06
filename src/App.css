@@ -27,3 +27,16 @@ body{
   color: blue;
   cursor: pointer;
 }
+.MuiAutocomplete-input{
+  min-width: min-content !important;
+  max-width: max-content !important;
+}
+.filter-conatiner{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* align-items: flex-end; */
+  background-color: transparent;
+  padding: 0 20px 20px;
+  margin-bottom: 20px;
+}

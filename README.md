@@ -1,4 +1,7 @@
-# Getting Started with Create React App
+# Start this Project
+- Clone this repository into your local machine.
+- Open terminal and write command npm install (this will install all the dependecies)
+- npm start
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

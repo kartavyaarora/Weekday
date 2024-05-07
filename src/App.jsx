@@ -10,10 +10,18 @@ import {
   Roles,
   numberOfEmployees,
 } from "./Components/Options";
+import debounce from "./Components/debounce";
 
 function App() {
   const [jobs, setJobs] = useState();
-  const [filter, setFilter] = useState([]);
+  const [filter, setFilter] = useState({
+    "Roles": [],
+    "Number of Employees": [],
+    "Experience": [],
+    "Remote": [],
+    "Minimum Base Pay Salary": [],
+    compName: [],
+  });
   useEffect(() => {
     const getJobs = async () => {
       let bodyContent = JSON.stringify({
@@ -58,6 +66,11 @@ function App() {
       multiple: false,
     },
   ];
+  const handleCompNameChange = debounce((event) => {
+    const newFilter = { ...filter, compName: event.target.value };
+    setFilter(newFilter);
+  });
+  console.log(filter)
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <div className="filter-conatiner">
@@ -67,14 +80,15 @@ function App() {
               multiple={field.multiple}
               label={field.name}
               options={field.options}
-              width={field.width}
+              setFilter={setFilter}
+              filter={filter}
             />
           </Box>
         ))}
         <TextField
           placeholder="Search Company Name"
-          onChange={(event, value) => setFilter(prev=>[...prev, {companyName:value}])}
-          sx={{ placeSelf: "end", mt: 3 }}
+          onChange={handleCompNameChange}
+          sx={{ placeSelf: "end", mt: 3, mx:1 }}
           id="outlined-size-small"
           size="small"
         />

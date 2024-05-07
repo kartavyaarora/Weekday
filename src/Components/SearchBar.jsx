@@ -1,5 +1,4 @@
 import { Autocomplete, TextField } from "@mui/material";
-import { useState } from "react";
 
 const SelectWithSearch = ({ options, onChange, label, multiple }) => {
   return (
@@ -22,11 +21,10 @@ const SelectWithSearch = ({ options, onChange, label, multiple }) => {
   );
 };
 
-export default function SearchBar({ label, options, multiple, width }) {
-  const [selectedOption, setSelectedOption] = useState(null);
-  console.log(selectedOption)
+export default function SearchBar({ label, options, multiple, setFilter, filter }) {
   const handleSelectChange = (option) => {
-    setSelectedOption(option);
+    const newFilter = { ...filter, [label]: option };
+    setFilter(newFilter);
   };
 
   return (
@@ -35,7 +33,6 @@ export default function SearchBar({ label, options, multiple, width }) {
         onChange={handleSelectChange}
         label={label}
         multiple={multiple}
-        width={width}
       />
   );
 }

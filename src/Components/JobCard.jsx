@@ -50,24 +50,23 @@ const JobCard = ({ data }) => {
           </Stack>
         </Stack>
         <Typography sx={{ my: 1.5, fontSize: 15, color: "rgb(77, 89, 106)" }}>
-          Estimated Salary: ₹
           {data?.minJdSalary
-            ? data?.minJdSalary + " - " + data?.maxJdSalary
+            ? "Estimated Salary: ₹"+data?.minJdSalary + " - " + data?.maxJdSalary
             : data?.maxJdSalary
-            ? data?.maxJdSalary
-            : data?.minJdSalary}{" "}
+            ? "Estimated Maximum Salary: ₹"+data?.maxJdSalary
+            : "Estimated Minimum Salary: ₹"+data?.minJdSalary}{" "}
           LPA
         </Typography>
         <Typography sx={{ fontSize: 17, fontWeight: 600 }}>
           About this Company
         </Typography>
-        <Box class="fade-text">
+        <Box className="fade-text">
           <Typography sx={{ fontSize: 13, fontWeight: 600 }}>
             About us:
           </Typography>
           <p>{data?.jobDetailsFromCompany}</p>
         </Box>
-        <span class="read-more">Read more</span>
+        <span className="read-more">Read more</span>
         {(data?.minExp || data?.maxExp) && (
             <>
               <Typography

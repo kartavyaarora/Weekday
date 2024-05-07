@@ -10,29 +10,32 @@ const SelectWithSearch = ({ options, onChange, label, multiple }) => {
       options={options}
       groupBy={(option) => option.heading}
       getOptionLabel={(option) => option.label}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder={label}
-        />
-      )}
+      renderInput={(params) => <TextField {...params} placeholder={label} />}
       onChange={(event, value) => onChange(value)}
     />
   );
 };
 
-export default function SearchBar({ label, options, multiple, setFilter, filter }) {
+export default function SearchBar({
+  label,
+  options,
+  multiple,
+  setFilter,
+  filter,
+}) {
   const handleSelectChange = (option) => {
-    const newFilter = { ...filter, [label]: option };
+    const newFilter = multiple
+      ? { ...filter, [label]: option?.map((item) => item.value.toLowerCase()) }
+      : { ...filter, [label]: option?.value.toLowerCase() };
     setFilter(newFilter);
   };
 
   return (
-      <SelectWithSearch
-        options={options}
-        onChange={handleSelectChange}
-        label={label}
-        multiple={multiple}
-      />
+    <SelectWithSearch
+      options={options}
+      onChange={handleSelectChange}
+      label={label}
+      multiple={multiple}
+    />
   );
 }

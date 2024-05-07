@@ -13,22 +13,26 @@ import {
 import debounce from "./Components/debounce";
 
 function App() {
-  const [jobs, setJobs] = useState();
+  const [jobs, setJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [limit, setlimit] = useState(10);
   const [filter, setFilter] = useState({
-    "Roles": [],
+    Roles: [],
     "Number of Employees": [],
-    "Experience": [],
-    "Remote": [],
-    "Minimum Base Pay Salary": [],
-    compName: [],
+    Experience: null,
+    Remote: [],
+    "Minimum Base Pay Salary": null,
+    compName: null,
   });
-  useEffect(() => {
-    const getJobs = async () => {
-      let bodyContent = JSON.stringify({
-        limit: 10,
-        offset: 0,
-      });
-
+  const getJobs = async () => {
+    setIsLoading(true);
+    setError(null);
+    let bodyContent = JSON.stringify({
+      limit: limit,
+      offset: 0,
+    });
+    try {
       let response = await fetch(
         "https://api.weekday.technology/adhoc/getSampleJdJSON",
         {
@@ -41,11 +45,30 @@ function App() {
       );
 
       let data = await response.json();
-      setJobs(data?.jdList);
-    };
-
+      // setJobs(data?.jdList);
+      setJobs(prevItems => [...prevItems, ...data?.jdList]);
+      setlimit(prevPage => prevPage + 1);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
     getJobs();
   }, []);
+
+  const handleScroll = () => {
+    if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || isLoading) {
+      return;
+    }
+    getJobs();
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isLoading]);
 
   const inputfields = [
     { name: "Roles", options: Roles, multiple: true },
@@ -70,7 +93,32 @@ function App() {
     const newFilter = { ...filter, compName: event.target.value };
     setFilter(newFilter);
   });
-  console.log(filter)
+  console.log(filter);
+  const JobList =
+    jobs
+      ?.filter((job) =>
+        filter?.Roles?.length !== 0 ? filter?.Roles?.includes(job.jobRole) : job
+      )
+      .filter((job) =>
+        filter?.Remote?.length !== 0
+          ? (filter?.Remote?.includes("office") &&
+              job.location !== "remote" &&
+              job.location !== "hybrid") ||
+            filter?.Remote?.includes(job.location)
+          : job
+      )
+      .filter((job) =>
+        filter.Experience ? filter.Experience >= job.minExp : job
+      )
+      .filter((job) =>
+        filter["Minimum Base Pay Salary"]
+          ? filter?.["Minimum Base Pay Salary"] <= job.minJdSalary
+          : job
+      ).filter((job) =>
+        filter.compName
+          ? job.companyName.toLowerCase().includes(filter.compName)
+          : job
+      );
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <div className="filter-conatiner">
@@ -88,13 +136,13 @@ function App() {
         <TextField
           placeholder="Search Company Name"
           onChange={handleCompNameChange}
-          sx={{ placeSelf: "end", mt: 3, mx:1 }}
+          sx={{ placeSelf: "end", mt: 3, mx: 1 }}
           id="outlined-size-small"
           size="small"
         />
       </div>
       <Grid container spacing={2}>
-        {jobs?.map((job) => (
+        {JobList?.map((job) => (
           <Grid item xs={12} sm={6} md={4} lg={4} key={job.jdUid}>
             <JobCard data={job} />
           </Grid>
